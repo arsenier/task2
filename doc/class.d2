@@ -1,0 +1,76 @@
+browser: {
+  shape: person
+}
+
+browser -> app.api
+
+app: {
+  api: {
+    schema: {
+      StudentSchema {
+        shape: class
+
+        name: str
+        group: str
+        age: int
+      }
+    }
+    routes: {
+      code: |python
+        router = APIRouter()
+      |
+
+      get_groups: |python
+        "/group"
+        response_model=list[Group]
+      |
+      get_groups -> _._.persistence.GroupPersistence
+      get_groups -> _._.domain.Group
+    }
+  }
+
+  db: {
+    models: {
+      group: {
+        GroupModel {
+          shape: class
+
+          id: UUID
+          name: str
+          chief: str
+        }
+      }
+    }
+  }
+
+  persistence: {
+    GroupPersistence {
+      shape: class
+
+      save() : None
+      get_by_id() : Group
+      list_groups() : "list[Group]"
+    }
+    GroupPersistence -> _.domain.Group
+    PostgresGroupPersistence {
+      shape: class
+
+      save() : None
+      get_by_id() : Group
+      list_groups() : "list[Group]"
+    }
+    PostgresGroupPersistence -> GroupPersistence
+    PostgresGroupPersistence -> _.db.models.group.GroupModel
+    PostgresGroupPersistence -> _.domain.Group
+  }
+
+  domain: {
+    Group {
+      shape: class
+ 
+      id: int
+      name: str
+      chief: str
+    }
+  }
+}
