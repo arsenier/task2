@@ -4,6 +4,7 @@ Student: {
   id: int {constraint: [primary_key; unique]}
   first_name: str
   last_name: str
+  group_id: int
 }
 
 Group: {
@@ -11,5 +12,5 @@ Group: {
 
     id: int {constraint: [primary_key; unique]}
     group_number: str
-    students: "list[Student]"
+    students: "list[int]"
 }
