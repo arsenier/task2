@@ -14,3 +14,9 @@ class Student(Base):
         ForeignKey("groups.id"),
     )
     group: Mapped["Group"] = relationship(back_populates="students")
+
+    def __str__(self):
+        return f"{self.__class__.__name__}(id={self.id}, name={self.first_name} {self.last_name}, group: {self.group_id})"
+
+    def __repr__(self):
+        return str(self)
