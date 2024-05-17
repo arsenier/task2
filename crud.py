@@ -10,6 +10,7 @@ from core.models.group import Group
 from core.models.student import Student
 
 
+##
 async def create_group(session: AsyncSession, group_number: str) -> Group:
     group = Group(group_number=group_number)
     session.add(group)
@@ -18,6 +19,7 @@ async def create_group(session: AsyncSession, group_number: str) -> Group:
     return group
 
 
+##
 async def get_groups(session: AsyncSession) -> list[Group]:
     stmt = select(Group).order_by(Group.id)
     groups = await session.scalars(stmt)
@@ -27,6 +29,7 @@ async def get_groups(session: AsyncSession) -> list[Group]:
     return groups
 
 
+##
 async def get_group_by_id(session: AsyncSession, group_id: int) -> Group:
     stmt = select(Group).where(Group.id == group_id)
     group = await session.scalar(stmt)
@@ -34,6 +37,7 @@ async def get_group_by_id(session: AsyncSession, group_id: int) -> Group:
     return group
 
 
+##
 async def get_group_by_number(session: AsyncSession, group_number: str) -> Group:
     stmt = select(Group).where(Group.group_number == group_number)
     group = await session.scalar(stmt)
@@ -41,6 +45,7 @@ async def get_group_by_number(session: AsyncSession, group_number: str) -> Group
     return group
 
 
+##
 async def delete_group(session: AsyncSession, group: Group) -> None:
     stmt = select(Student).where(Student.group_id == group.id).order_by(Student.id)
     student_in_group = await session.scalars(stmt)
@@ -52,6 +57,7 @@ async def delete_group(session: AsyncSession, group: Group) -> None:
     await session.commit()
 
 
+##
 async def create_student(
     session: AsyncSession,
     student_in: StudentCreate,
@@ -63,6 +69,7 @@ async def create_student(
     return student
 
 
+##
 async def get_students(session: AsyncSession) -> list[Student]:
     stmt = select(Student).order_by(Student.id)
     students = await session.scalars(stmt)
@@ -72,6 +79,7 @@ async def get_students(session: AsyncSession) -> list[Student]:
     return students
 
 
+##
 async def get_student_by_id(session: AsyncSession, student_id: int) -> Student:
     stmt = select(Student).where(Student.id == student_id)
     student = await session.scalar(stmt)
@@ -79,6 +87,7 @@ async def get_student_by_id(session: AsyncSession, student_id: int) -> Student:
     return student
 
 
+##
 async def delete_student(
     session: AsyncSession,
     student: Student,
@@ -87,6 +96,7 @@ async def delete_student(
     await session.commit()
 
 
+##
 async def get_students_in_group(session: AsyncSession, group: Group) -> list[Student]:
     stmt = (
         select(Group).options(selectinload(Group.students)).where(Group.id == group.id)
@@ -99,6 +109,7 @@ async def get_students_in_group(session: AsyncSession, group: Group) -> list[Stu
     return students
 
 
+##
 async def update_student_s_group(
     session: AsyncSession, student: Student, group_new: Group
 ):

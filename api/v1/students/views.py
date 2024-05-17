@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.v1.groups.dependencies import group_by_id
 from api.v1.students import crud
 from api.v1.students.dependencies import student_by_id
 from api.v1.students.schemas import (
@@ -10,6 +11,8 @@ from api.v1.students.schemas import (
     StudentUpdatePartial,
 )
 from core.models import db_helper
+from core.models.group import Group
+from core.models.student import Student
 
 
 router = APIRouter(tags=["Students"])
@@ -31,7 +34,14 @@ async def create_student(
     student_in: StudentCreate,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.create_student(student_in=student_in, session=session)
+    student = await crud.create_student(student_in=student_in, session=session)
+    if student is not None:
+        return student
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Group {student_in.group_id} does not exist!",
+    )
 
 
 @router.get(
@@ -57,17 +67,30 @@ async def update_student(
     )
 
 
+# @router.patch("/{student_id}/")
+# async def update_student_partial(
+#     student_update: StudentUpdatePartial,
+#     student: StudentSchema = Depends(student_by_id),
+#     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+# ):
+#     return await crud.update_student(
+#         session=session,
+#         student=student,
+#         student_update=student_update,
+#         partial=True,
+#     )
+
+
 @router.patch("/{student_id}/")
-async def update_student_partial(
-    student_update: StudentUpdatePartial,
-    student: StudentSchema = Depends(student_by_id),
+async def update_student_s_group(
+    student: Student = Depends(student_by_id),
+    group_new: Group = Depends(group_by_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.update_student(
+    return await crud.update_student_s_group(
         session=session,
         student=student,
-        student_update=student_update,
-        partial=True,
+        group_new=group_new,
     )
 
 
