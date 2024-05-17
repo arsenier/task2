@@ -30,6 +30,13 @@ async def get_groups(session: AsyncSession) -> list[Group]:
 async def get_group_by_id(session: AsyncSession, group_id: int) -> Group:
     stmt = select(Group).where(Group.id == group_id)
     group = await session.scalar(stmt)
+    # print(group)
+    return group
+
+
+async def get_group_by_number(session: AsyncSession, group_number: str) -> Group:
+    stmt = select(Group).where(Group.group_number == group_number)
+    group = await session.scalar(stmt)
     print(group)
     return group
 
@@ -92,6 +99,15 @@ async def get_students_in_group(session: AsyncSession, group: Group) -> list[Stu
     return students
 
 
+async def update_student_s_group(
+    session: AsyncSession, student: Student, group_new: Group
+):
+    setattr(student, "group_id", group_new.id)
+    await session.commit()
+    print(student)
+    return student
+
+
 async def main():
     async with db_helper.session_factory() as session:
         # await create_group(session=session, group_number="3532704/90201")
@@ -107,16 +123,28 @@ async def main():
         # student_in = StudentCreate(first_name="Leonid", last_name="Ilyich", group_id=3)
         # await create_student(session=session, student_in=student_in)
 
-        await get_groups(session)
+        # await get_groups(session)
         # await get_group_by_id(session, 1)
         # await get_student_by_id(session, 2)
         # await delete_student(session, await get_student_by_id(session, 3))
-        await get_students_in_group(
-            session,
-            await get_group_by_id(session, 3),
-        )
+        # await get_students_in_group(
+        #     session,
+        #     await get_group_by_id(session, 2),
+        # )
+
+        # student = await get_student_by_id(session, 6)
+        # group_new = await get_group_by_id(session, 2)
+        # await update_student_s_group(session, student, group_new)
+        # await get_students_in_group(
+        #     session,
+        #     await get_group_by_id(session, 2),
+        # )
+
+        # await get_group_by_number(session, "5142704/30801")
 
         # await get_students(session)
+
+        pass
 
 
 if __name__ == "__main__":
