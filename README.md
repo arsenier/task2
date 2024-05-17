@@ -39,6 +39,28 @@ poetry install
 
 После установки всех зависимостей проект запускается с помощью:
 
-```
+```sh
 python3 main.py
+```
+
+## Запуск через Docker
+
+Как альтернатива приложение контейнирезовано. Образ приложения лежит в репозитории `arsenier/student-api`.
+
+Для запуска через Docker можно воспользоваться командой:
+
+```sh
+docker run -p 127.0.0.1:8000:8000 \
+    -w /app --mount type=bind,src="$(pwd)/db",target="/app/db" \
+    arsenier/student-api:v1.0
+```
+
+В папке `./db` должна лежать база данных sqlite: `db.sqlite3`
+
+## Запуск через DockerCompose
+
+Также подготовлен файл `docker-compose.yml` для запуска с использованием Docker compose. Для запуска необходимо также иметь в папке `./db` базу данных sqlite: `db.sqlite3`.
+
+```sh
+docker compose up
 ```
