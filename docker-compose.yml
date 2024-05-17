@@ -1,0 +1,8 @@
+services:
+  app:
+    image: arsenier/student-api:v1.0
+    ports:
+      - 8000:8000
+    working_dir: /app
+    volumes:
+      - ./db:/app/db
